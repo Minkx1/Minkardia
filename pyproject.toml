@@ -1,0 +1,15 @@
+[project]
+name = "minkardia"
+version = "0.1.0"
+description = "Test programming language built for shit."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Minkx1", email = "zakalata.mark@gmail.com" }]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/Minkx1/Minkardia"
+
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
