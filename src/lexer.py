@@ -129,29 +129,25 @@ class Lexer:
         quote_char = self.cur_char()
         self.advance()  # Skip opening quote
 
-        value = ""
+        chunks: list[str] = []
         while self.cur_char() != quote_char and self.cur_char() != "\0":
             if self.cur_char() == "\\":
                 self.advance()
-                # Handle escape sequences
+                if self.cur_char() == "\0":
+                    self.error("Unterminated string.")
                 escape_char = self.cur_char()
-                esc_val: str|None = Lexer.ESCAPE_MAP.get(escape_char, None)
-
-                if esc_val is None:
-                    value += ("\\" + escape_char)
-                else:
-                    value += esc_val
-                
+                esc_val = self.ESCAPE_MAP.get(escape_char)
+                chunks.append(esc_val if esc_val is not None else "\\" + escape_char)
                 self.advance()
             else:
-                value += self.cur_char()
+                chunks.append(self.cur_char())
                 self.advance()
 
         if self.cur_char() != quote_char:
-            self.error(f"Unterminated string.")
+            self.error("Unterminated string.")
 
         self.advance()  # Skip closing quote
-        return Token(TokenType.STRING, value, start_line, start_col)
+        return Token(TokenType.STRING, "".join(chunks), start_line, start_col)
 
     def parse_identifier(self) -> Token:
         identifier = ""
